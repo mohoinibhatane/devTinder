@@ -1,28 +1,38 @@
 const express = require("express");
 const app = express();
+const { authAdmin, userAuth } = require("../middleware/auth.js");
 
-// app.use("/", (req, res) => {
-//   res.send("this is wild card");
-// });
+app.use("/admin", authAdmin);
 
-// app.use("/test", (req, res) => {
-//   res.send("this is test route");
-// });
+app.get("/admin/getAllData", (req, res) => {
+  res.send("getting all data");
+});
 
-// app.use("/home", (req, res) => {
-//   res.send("this is home route");
-// });
+app.get("/user/login", (req, res, next) => {
+  res.status(201).send("user  logged in successfully");
+  next();
+});
+app.use("/user", userAuth);
 
-app.get("/user",(req,res) => {
-    res.send("this is get api call");
-})
+app.get("/user/deleteUser", (req, res) => {
+  res.send("user deleted successfully");
+});
 
-app.post("/user", (req,res) => {
-    res.send("this is post api call");
-})
+// error handling using try catch
+app.get("/getUserData", (req, res) => {
+  try {
+    throw new Error("hgyyfghdusighuih");
+    res.send("user data send");
+  } catch (error) {
+    res.status(500).send("error occured");
+  }
+});
 
-app.delete("/user", (req, res) => {
-  res.send("this is delete api call");
+//error handling for all routes****
+app.use("/", (error, req, res, next) => {
+  if (err) {
+    res.status(500).send("something went wrong");
+  }
 });
 
 app.listen(7777, () => {
