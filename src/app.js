@@ -1,40 +1,33 @@
 const express = require("express");
 const app = express();
-const { authAdmin, userAuth } = require("../middleware/auth.js");
+const { connectDb } = require("./config/database");
+const { User } = require("./models/user.js");
 
-app.use("/admin", authAdmin);
+app.post("/signup", async (req, res) => {
+  //creating instance of user
 
-app.get("/admin/getAllData", (req, res) => {
-  res.send("getting all data");
+  const user = new User({
+    firstName: "satish",
+    lastName: "kendre",
+    email: "satish@23",
+    password: "12345",
+  });
+
+  await user.save();
+  res.send("user created successfully");
 });
 
-app.get("/user/login", (req, res, next) => {
-  res.status(201).send("user  logged in successfully");
-  next();
-});
-app.use("/user", userAuth);
+connectDb()
+  .then(() => {
+    console.log("database connection estabilished");
 
-app.get("/user/deleteUser", (req, res) => {
-  res.send("user deleted successfully");
-});
+    app.listen(7777, () => {
+      console.log(`server is running on 7777`);
+    });
+  })
 
-// error handling using try catch
-app.get("/getUserData", (req, res) => {
-  try {
-    throw new Error("hgyyfghdusighuih");
-    res.send("user data send");
-  } catch (error) {
-    res.status(500).send("error occured");
-  }
-});
+  .catch((error) => {
+    console.error("database can not be estabilished");
+  });
 
-//error handling for all routes****
-app.use("/", (error, req, res, next) => {
-  if (err) {
-    res.status(500).send("something went wrong");
-  }
-});
 
-app.listen(7777, () => {
-    console.log(`server is running on 7777`)
-});
