@@ -25,6 +25,39 @@ app.get("/users", async(req, res) => {
     }
 })
 
+//get user by firstName
+app.get("/user", async(req, res) => {
+    const name = req.body.firstName;
+
+    try{
+       const user =  await User.find({firstName: name});
+       if(!user){
+        res.status(400).send("user not found");
+       }else{
+        res.send(user);
+       }
+
+    }catch(error){
+        res.status(400).send("something wrong");
+    }
+})
+
+//get all users from database
+app.get("/feed", async(req, res) => {
+
+    try{
+        const user = await User.find({});
+        if(user === 0){
+            res.status(400).send("user not found");
+        }else{
+            res.send(user);
+        }
+
+    }catch(error){
+        res.status(400).send("something went wrong")
+    }
+})
+
 app.post("/signup", async (req, res) => {
   //creating instance of user
 
